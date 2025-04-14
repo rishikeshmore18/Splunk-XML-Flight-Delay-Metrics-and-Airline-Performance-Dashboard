@@ -1,0 +1,117 @@
+Dashboard 1
+<form version="1.1" theme="dark">
+  <label>Delay Trends and Analysis</label>
+  <fieldset submitButton="false" autoRun="true"></fieldset>
+  <row>
+    <panel>
+      <title>Total Delay by Cause</title>
+      <chart>
+        <search ref="Total Delay by Cause"></search>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="height">250</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Delay By Airlines</title>
+      <chart>
+        <search>
+          <query>index="sampled_flights_tattoine"
+| stats avg(DEP_DELAY) as avg_departure_delay, avg(ARR_DELAY) as avg_arrival_delay by AIRLINE
+| where avg_arrival_delay &gt;= 0
+| sort -avg_departure_delay</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Distance vs. Air Time</title>
+      <chart>
+        <search ref="Distance vs. Air Time"></search>
+        <option name="charting.drilldown">none</option>
+        <option name="height">463</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Avg Flight Duration by Route</title>
+      <input type="dropdown" token="Origin_City" searchWhenChanged="true">
+        <label>Origin City</label>
+        <fieldForLabel>ORIGIN_CITY</fieldForLabel>
+        <fieldForValue>ORIGIN_CITY</fieldForValue>
+        <search>
+          <query>index="sampled_flights_tattoine"
+| stats values(ORIGIN_CITY) as Origin_Cities
+| mvexpand Origin_Cities
+| rename Origin_Cities as ORIGIN_CITY
+| sort ORIGIN_CITY</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <initialValue>Boston, MA</initialValue>
+        <default>Boston, MA</default>
+      </input>
+      <input type="dropdown" token="Destination_City" searchWhenChanged="true">
+        <label>Destination City</label>
+        <fieldForLabel>DEST_CITY</fieldForLabel>
+        <fieldForValue>DEST_CITY</fieldForValue>
+        <search>
+          <query>index="sampled_flights_tattoine" 
+| stats values(DEST_CITY) as Destination_Cities
+| mvexpand Destination_Cities
+| rename Destination_Cities as DEST_CITY
+| sort DEST_CITY</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <choice value="*">All</choice>
+        <default>*</default>
+      </input>
+      <table>
+        <search>
+          <query>index="sampled_flights_tattoine" ORIGIN_CITY="$Origin_City$" DEST_CITY="$Destination_City$"
+| stats avg(AIR_TIME) as Avg_Flight_Duration by ORIGIN_CITY, DEST_CITY
+| sort - Avg_Flight_Duration</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+</form>
