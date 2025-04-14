@@ -1,0 +1,2 @@
+# Splunk-XML-Flight-Delay-Metrics-and-Airline-Performance-Dashboard
+A Splunk-powered dual-dashboard solution that visualizes, analyzes, and monitors U.S. flight delay causes, airline KPIs, cancellations, and route-specific performance trends in real-time. Built with modular XML and SPL queries, this solution provides interactive exploration through geo-maps, pie charts, bar graphs, and dynamic tables.
